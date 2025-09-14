@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon-16x16.png" type="image/x-icon">
+    <title>Gerador de Trabalhos Académicos</title>
+        <!-- Tailwind CSS CDN para estilização moderna e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&family=Arial&display=swap');
+        
+        /* Estilos personalizados */
+        .page-counter {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 11px;
+        }
+
+        /* Proteção contra screenshot (deterrente) */
+        .no-screenshot {
+            position: relative;
+        }
+
+        .no-screenshot::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center p-6 min-h-screen font-sans">
+
+    <div class="flex flex-col md:flex-row gap-8 w-full max-w-7xl bg-white shadow-xl rounded-2xl overflow-hidden p-8">
+
+        <!-- Formulário e Opções (Coluna Esquerda) -->
+        <div class="w-full md:w-2/5 p-6 bg-gray-50 rounded-lg">
+            <header class="flex flex-col items-center mb-6">
+                <img src="LOGO 60.png" alt="">Gerador de Trabalhos Académicos</h1>
+                <p class="mt-2 text-center text-sm text-gray-600">Gere trabalhos perfeitos de forma automática.</p>
+            </header>
+            
+            <form id="generationForm" class="space-y-6">
+                <!-- Informações do Estudante -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-2 text-gray-700">Informações do Estudante</h2>
+                    <input type="text" id="studentName" placeholder="Nome do estudante" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="institutionName" placeholder="Nome da Instituição" class="w-full mt-3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="professorName" placeholder="Nome do Professor" class="w-full mt-3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- Informações do Trabalho -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-2 text-gray-700">Informações do Trabalho</h2>
+                    <input type="text" id="workTopic" placeholder="Tema do trabalho" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="workDiscipline" placeholder="Disciplina" class="w-full mt-3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <select id="workLevel" class="w-full mt-3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="Secundário">Secundário</option>
+                        <option value="Licenciatura">Licenciatura</option>
+                        <option value="Mestrado">Mestrado</option>
+                    </select>
+                </div>
+
+                <!-- Estrutura do Trabalho -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-2 text-gray-700">Estrutura (Opcional)</h2>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <label class="flex items-center"><input type="checkbox" id="addCapa" class="mr-2"> Capa</label>
+                        <label class="flex items-center"><input type="checkbox" id="addFolhaRosto" class="mr-2"> Folha de rosto</label>
+                        <label class="flex items-center"><input type="checkbox" id="addIndice" class="mr-2"> Índice</label>
+                        <label class="flex items-center"><input type="checkbox" id="addIntro" class="mr-2"> Introdução</label>
+                        <label class="flex items-center"><input type="checkbox" id="addDesenvolvimento" class="mr-2"> Desenvolvimento</label>
+                        <label class="flex items-center"><input type="checkbox" id="addConclusao" class="mr-2"> Conclusão</label>
+                        <label class="flex items-center"><input type="checkbox" id="addBibliografia" class="mr-2"> Bibliografia</label>
+                    </div>
+                </div>
+
+                <!-- Configurações Adicionais -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-2 text-gray-700">Configurações de Geração</h2>
+                    <input type="number" id="numPages" placeholder="Nº de páginas (total)" min="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="number" id="paragraphsPerPage" placeholder="Parágrafos por página" min="1" class="w-full mt-3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <button type="button" id="generateBtn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg shadow-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Gerar Trabalho
+                </button>
+            </form>
+        </div>
+
+        <!-- Pré-visualização e Edição (Coluna Direita) -->
+        <div class="w-full md:w-3/5 p-6 bg-white rounded-lg border-2 border-gray-200">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Pré-visualização do Trabalho</h2>
+
+            <!-- Ferramentas de Edição -->
+            <div class="mb-4 flex flex-wrap gap-2 items-center justify-center p-3 bg-gray-100 rounded-lg">
+                <select id="fontType" class="px-3 py-1 border rounded-lg">
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Arial">Arial</option>
+                </select>
+                <select id="fontSize" class="px-3 py-1 border rounded-lg">
+                    <option value="11">11pt</option>
+                    <option value="12">12pt</option>
+                </select>
+                <select id="lineSpacing" class="px-3 py-1 border rounded-lg">
+                    <option value="1">Simples</option>
+                    <option value="1.5">1.5</option>
+                    <option value="2">Duplo</option>
+                </select>
+                <button onclick="document.execCommand('bold', false, null);" class="p-2 border rounded-lg hover:bg-gray-200 font-bold">B</button>
+                <button onclick="document.execCommand('italic', false, null);" class="p-2 border rounded-lg hover:bg-gray-200 italic">I</button>
+                <button onclick="document.execCommand('justifyFull', false, null);" class="p-2 border rounded-lg hover:bg-gray-200">Justificar</button>
+                <button onclick="document.execCommand('justifyLeft', false, null);" class="p-2 border rounded-lg hover:bg-gray-200">Esquerda</button>
+                <button onclick="document.execCommand('justifyCenter', false, null);" class="p-2 border rounded-lg hover:bg-gray-200">Centro</button>
+            </div>
+            
+            <!-- Área de Pré-visualização Editável -->
+            <div id="previewArea" contenteditable="true" class="relative w-full h-auto p-8 border-2 border-gray-300 rounded-lg no-screenshot min-h-96">
+                <!-- O conteúdo gerado aparecerá aqui -->
+                <p class="text-center text-gray-500">Clique em "Gerar Trabalho" para pré-visualizar.</p>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-center items-center gap-4 mt-6">
+                <button id="downloadBtn" class="w-full md:w-auto bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500">
+                    Pagar e Baixar
+                </button>
+                <div id="paymentModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 z-50">
+                    <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+                        <h3 class="text-xl font-bold mb-4">Finalizar Pagamento</h3>
+                        <p class="mb-4">Selecione o seu método de pagamento.</p>
+                        <div class="flex flex-col gap-3">
+                            <button class="bg-blue-500 text-white py-2 px-4 rounded-lg">PayPal</button>
+                            <button class="bg-red-500 text-white py-2 px-4 rounded-lg">e-Mola</button>
+                        </div>
+                        <button onclick="document.getElementById('paymentModal').classList.add('hidden')" class="mt-4 text-gray-500 hover:text-gray-700">Fechar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal de Proibição -->
+            <div id="prohibitionModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 z-50">
+                <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+                    <h3 class="text-xl font-bold mb-4">Atenção!</h3>
+                    <p class="mb-4 text-red-600 font-semibold">Esta funcionalidade está bloqueada antes do pagamento.</p>
+                    <button onclick="document.getElementById('prohibitionModal').classList.add('hidden')" class="mt-4 text-gray-500 hover:text-gray-700">OK</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        const form = document.getElementById('generationForm');
+        const generateBtn = document.getElementById('generateBtn');
+        const previewArea = document.getElementById('previewArea');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const paymentModal = document.getElementById('paymentModal');
+        const prohibitionModal = document.getElementById('prohibitionModal');
+        
+        // Configurações de Formato (inicialmente ocultas)
+        const fontTypeSelect = document.getElementById('fontType');
+        const fontSizeSelect = document.getElementById('fontSize');
+        const lineSpacingSelect = document.getElementById('lineSpacing');
+
+        // Estado do documento
+        let isPaid = false;
+
+        // Adiciona um ouvinte de evento para proibir copy/paste
+        document.addEventListener('copy', (e) => {
+            if (!isPaid) {
+                e.preventDefault();
+                showProhibitionModal();
+            }
+        });
+
+        // Adiciona um ouvinte de evento para proibir o menu de contexto (botão direito)
+        document.addEventListener('contextmenu', (e) => {
+            if (!isPaid) {
+                e.preventDefault();
+            }
+        });
+
+        // Adiciona um ouvinte de evento para o botão "Gerar Trabalho"
+        generateBtn.addEventListener('click', () => {
+            generateWork();
+        });
+
+        // Adiciona ouvintes de evento para as opções de formatação
+        fontTypeSelect.addEventListener('change', () => {
+            previewArea.style.fontFamily = fontTypeSelect.value;
+        });
+
+        fontSizeSelect.addEventListener('change', () => {
+            previewArea.style.fontSize = `${fontSizeSelect.value}pt`;
+        });
+
+        lineSpacingSelect.addEventListener('change', () => {
+            previewArea.style.lineHeight = lineSpacingSelect.value;
+        });
+
+        // Simula o pagamento e permite o download
+        downloadBtn.addEventListener('click', () => {
+            if (isPaid) {
+                 // Funcionalidade de download simulada
+                 alert("Download iniciado! O arquivo será salvo em PDF ou DOCX.");
+            } else {
+                paymentModal.classList.remove('hidden');
+            }
+        });
+
+        // Evento de clique no botão de pagamento dentro do modal
+        paymentModal.querySelectorAll('button').forEach(btn => {
+            if (btn.textContent !== 'Fechar') {
+                btn.addEventListener('click', () => {
+                    // Simulação de pagamento concluído
+                    isPaid = true;
+                    paymentModal.classList.add('hidden');
+                    alert("Pagamento confirmado! Agora você pode baixar o seu trabalho.");
+                });
+            }
+        });
+
+        // Função para mostrar o modal de proibição
+        function showProhibitionModal() {
+            prohibitionModal.classList.remove('hidden');
+        }
+
+        // Função para gerar o conteúdo do trabalho
+        function generateWork() {
+            const studentName = document.getElementById('studentName').value || "Nome do Estudante";
+            const institutionName = document.getElementById('institutionName').value || "Nome da Instituição";
+            const professorName = document.getElementById('professorName').value || "Nome do Professor";
+            const workTopic = document.getElementById('workTopic').value || "Tema do Trabalho";
+            const workDiscipline = document.getElementById('workDiscipline').value || "Disciplina";
+            const workLevel = document.getElementById('workLevel').value;
+            const addCapa = document.getElementById('addCapa').checked;
+            const addFolhaRosto = document.getElementById('addFolhaRosto').checked;
+            const addIndice = document.getElementById('addIndice').checked;
+            const addIntro = document.getElementById('addIntro').checked;
+            const addDesenvolvimento = document.getElementById('addDesenvolvimento').checked;
+            const addConclusao = document.getElementById('addConclusao').checked;
+            const addBibliografia = document.getElementById('addBibliografia').checked;
+            const numPages = parseInt(document.getElementById('numPages').value) || 10;
+            const paragraphsPerPage = parseInt(document.getElementById('paragraphsPerPage').value) || 3;
+
+            let content = '';
+            let pageNum = 1;
+
+            const generatePage = (pageContent) => {
+                return `
+                    <div class="relative min-h-[800px] border p-12 mb-8 bg-white shadow-sm break-after-page">
+                        <p class="page-counter">Página ${pageNum++}</p>
+                        ${pageContent}
+                    </div>
+                `;
+            };
+
+            // Bloco I: Capa e Folha de Rosto (Contracapa)
+            if (addCapa) {
+                content += generatePage(`
+                    <div class="h-full flex flex-col justify-center items-center text-center">
+                        <div class="w-full h-full border-4 border-gray-300 rounded-lg flex items-center justify-center p-8">
+                            <div>
+                                <h1 class="text-3xl font-bold mb-20">Trabalho de ${workDiscipline}</h1>
+                                <h2 class="text-xl font-semibold mb-8">Tema: ${workTopic}</h2>
+                                <p class="text-lg"><strong>Estudante:</strong> ${studentName}</p>
+                                <p class="text-lg"><strong>Instituição:</strong> ${institutionName}</p>
+                                <p class="text-lg"><strong>Nível:</strong> ${workLevel}</p>
+                                <p class="text-lg mt-20"><strong>Professor:</strong> ${professorName}</p>
+                                <p class="text-sm mt-20">${new Date().getFullYear()}</p>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            }
+            if (addFolhaRosto) {
+                 content += generatePage(`
+                    <div class="h-full flex flex-col justify-center items-center text-center">
+                        <div class="w-full h-full border-4 border-gray-300 rounded-lg flex items-center justify-center p-8">
+                            <div>
+                                <h2 class="text-xl font-semibold mb-8">Folha de Rosto</h2>
+                                <p class="mb-4"><strong>Trabalho de:</strong> ${workDiscipline}</p>
+                                <p class="mb-4"><strong>Apresentado por:</strong> ${studentName}</p>
+                                <p class="mb-4"><strong>Orientado por:</strong> ${professorName}</p>
+                                <p class="text-lg mt-20">Este trabalho de conclusão de ${workLevel} foi submetido como requisito parcial para a obtenção de nota final na disciplina de ${workDiscipline}.</p>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            }
+
+            // Bloco de Índice (gerado no final, mas preparado aqui)
+            if (addIndice) {
+                const indiceContent = `
+                    <h2 class="text-2xl font-bold mb-4 text-center">Índice</h2>
+                    <ul class="list-none text-left pl-0">
+                        <li class="mb-2">1. Introdução
